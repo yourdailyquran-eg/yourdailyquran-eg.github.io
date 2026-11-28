@@ -49,7 +49,7 @@ ol{list-style:none;padding:0;display:grid;gap:12px}
 .txt{font-family:Amiri,serif;font-size:30px;line-height:2.3;color:#8d8777;text-align:justify;padding:6px 4px}
 .w{border-radius:6px;padding:0 2px;transition:.25s;color:transparent;border-bottom:2px solid #3a382c}
 .w.cur{background:#c9a24b22;border-bottom-color:#c9a24b;box-shadow:0 0 0 1px #c9a24b66}
-.w.ok{color:#5fe08e;border-bottom-color:transparent}.w.bad{color:#ff6b6b;background:#ff6b6b22;border-bottom-color:#ff6b6b}
+.w.unk{color:#ffb454;border-bottom-color:#ffb454}.w.ok{color:#5fe08e;border-bottom-color:transparent}.w.bad{color:#ff6b6b;background:#ff6b6b22;border-bottom-color:#ff6b6b}
 .mk{color:#c9a24b88;font-size:20px}.vn{color:#c9a24b;font-size:20px;margin:0 3px}
 .bar{display:flex;gap:10px;margin-top:12px;position:sticky;bottom:-22px;background:#0f1117;padding:10px 0 22px}
 .bar button{flex:1;border:0;cursor:pointer;font:inherit;font-size:14px;font-weight:600;padding:13px;border-radius:24px}
@@ -81,41 +81,78 @@ ol{list-style:none;padding:0;display:grid;gap:12px}
 var $=function(i){return document.getElementById(i)};
 var ov=$('ov'),tx=$('tx'),go=$('go'),rs=$('rs'),ms=$('ms'),sc=$('sc');
 var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-var words=[],rec=null,listening=false,S=null,sess=[],consumed=0,timer=null,finished=false;
+var S0=null,words=[],rec=null,listening=false,S=null,sess=[],consumed=0,timer=null,finished=false;
 function norm(s){return s.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,'').replace(/[ٱأإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/[^\u0621-\u064A]/g,'')}
+function vars(raw){var o=[],a=norm(raw),b=norm(raw.replace(/\u0648\u0670/g,'\u0627').replace(/\u0670/g,'\u0627')),c;
+o.push(a);if(b&&b!=a)o.push(b);
+[a,b].forEach(function(x){c=x.replace(/\u0621/g,'').replace(/\u0627{2,}/g,'\u0627');if(c&&o.indexOf(c)<0)o.push(c);c=x.replace(/\u0621/g,'\u0627').replace(/\u0627{2,}/g,'\u0627');if(c&&o.indexOf(c)<0)o.push(c)});
+return o}
+function likeS(a,b){if(!a||!b)return false;if(a==b)return true;var l=Math.max(a.length,b.length);return l>2&&1-lev(a,b)/l>=0.85}
 function lev(a,b){var m=a.length,n=b.length,d=[],i,j;for(i=0;i<=m;i++){d[i]=[i]}for(j=1;j<=n;j++)d[0][j]=j;
 for(i=1;i<=m;i++)for(j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]==b[j-1]?0:1));return d[m][n]}
 function like(a,b){if(!a||!b)return false;if(a==b)return true;var l=Math.max(a.length,b.length);if(l<=2)return false;
 var r=1-lev(a,b)/l;return r>=(l<=3?0.66:l<=5?0.6:0.62)}
 function prep(arr){var o=[],i;for(i=0;i<arr.length;i++){var w=norm(arr[i]);if(!w)continue;
 if(w=='الف'&&norm(arr[i+1]||'')=='لام'&&norm(arr[i+2]||'')=='ميم'){o.push('الم');i+=2;continue}o.push(w)}return o}
-function fresh(){var st=[],t;for(t=0;t<words.length;t++)st[t]=0;return {st:st,i:0}}
-function copy(s){return {st:s.st.slice(),i:s.i}}
+function fresh(){var st=[],t;for(t=0;t<words.length;t++)st[t]=0;return {st:st,i:0,nz:0}}
+function copy(s){return {st:s.st.slice(),i:s.i,nz:s.nz||0}}
 function X(i){return i<words.length?words[i].n:''}
-/* commit=true: wrong words are marked red (once per position). commit=false: only correct words advance. */
-function run(s,toks,commit){var n=words.length,t=0;
-while(t<toks.length&&s.i<n){var w=toks[t],i=s.i,nx=toks[t+1]||'';
-if(like(w,X(i))){if(s.st[i]!=2)s.st[i]=1;s.i++;t++;continue}
-if(i+1<n&&like(w,X(i)+X(i+1))){if(s.st[i]!=2)s.st[i]=1;if(s.st[i+1]!=2)s.st[i+1]=1;s.i+=2;t++;continue}
-if(nx&&like(w+nx,X(i))){if(s.st[i]!=2)s.st[i]=1;s.i++;t+=2;continue}
-if(i>0&&like(w,X(i-1))){t++;continue}
-if(!commit)break;
-if(i+1<n&&like(w,X(i+1))){s.st[i]=2;if(s.st[i+1]!=2)s.st[i+1]=1;s.i+=2;t++;continue}
-s.st[i]=2;t++}
-return s}
+function L(w,i){if(i>=words.length)return false;var v=words[i].v,k;for(k=0;k<v.length;k++)if(like(w,v[k]))return true;return false}
+function LJS(w,i,c){var k,j,v=[''];for(k=0;k<c;k++){if(i+k>=words.length)return false;var nv=[];for(j=0;j<v.length;j++)words[i+k].v.forEach(function(x){nv.push(v[j]+x)});v=nv}
+for(k=0;k<v.length;k++)if(likeS(w,v[k]))return true;return false}
+function LJ(w,i,c){var k,j,v=[''];for(k=0;k<c;k++){if(i+k>=words.length)return false;var nv=[];for(j=0;j<v.length;j++)words[i+k].v.forEach(function(x){nv.push(v[j]+x)});v=nv}
+for(k=0;k<v.length;k++)if(like(w,v[k]))return true;return false}
+/* Alignment: edit-distance (DP) between the heard tokens and the expected words, from the session start state.
+   match=ok, wrong word in place=red, word never heard=orange, extra heard token=ignored. */
+function sim(w,i){var v=words[i].v,k,b=0,r;if(!w)return 0;for(k=0;k<v.length;k++){if(w==v[k])return 1;var l=Math.max(w.length,v[k].length);r=1-lev(w,v[k])/l;if(r>b&&like(w,v[k]))b=r}return b}
+function align(s0,toks,commit){var n=words.length,p0=s0.i,m=toks.length,s=copy(s0),i,j;
+if(!m||p0>=n)return s;
+var K=Math.min(n-p0,2*m+10),INF=1e9,D=[],B=[],cache={};
+function sm(a,j){var key=a+'|'+j;if(cache[key]===undefined)cache[key]=sim(toks[a],p0+j);return cache[key]}
+function mg(a,j,c){var key='m'+a+'|'+j+'|'+c;if(cache[key]===undefined)cache[key]=LJS(toks[a],p0+j,c)?1:0;return cache[key]}
+function sp(a,j){var key='s'+a+'|'+j;if(cache[key]===undefined)cache[key]=(a+1<m&&LJS(toks[a]+toks[a+1],p0+j,1))?1:0;return cache[key]}
+for(i=0;i<=m;i++){D[i]=[];B[i]=[];for(j=0;j<=K;j++){D[i][j]=INF;B[i][j]=null}}
+D[0][0]=0;
+var d=0,ci0=0,cj0=0,cop;function rel(ni,nj,c,op){if(nj<=K&&ni<=m&&d+c<D[ni][nj]-1e-9){D[ni][nj]=d+c;B[ni][nj]=[ci0,cj0,op]}}
+for(i=0;i<=m;i++)for(j=Math.max(0,Math.floor(i*0.6)-6);j<=K&&j<=Math.ceil(i*1.6)+10;j++){d=D[i][j];if(d>=INF)continue;ci0=i;cj0=j;
+if(i<m){rel(i+1,j,0.6,'ins');
+if(j<K){var r=sm(i,j);rel(i+1,j+1,r>0?(1-r)*0.4:1,r>0?'ok':'sub');
+if(j+1<K&&mg(i,j,2))rel(i+1,j+2,0.1,'m2');
+if(j+2<K&&toks[i].length>=6&&mg(i,j,3))rel(i+1,j+3,0.15,'m3');
+if(sp(i,j))rel(i+2,j+1,0.1,'sp')}}
+if(j<K)rel(i,j+1,1,'del')}
+var bj=0,bc=INF;for(j=0;j<=K;j++){if(D[m][j]<=bc+1e-9&&D[m][j]<INF){bc=D[m][j];bj=j}}
+/* trailing: drop op ends that are only ins/del at the very end */
+var ops=[],ci=m,cj=bj,e;while(ci>0||cj>0){e=B[ci][cj];if(!e)break;ops.push({op:e[2],i:e[0],j:e[1],ni:ci,nj:cj});ci=e[0];cj=e[1]}
+ops.reverse();
+var last=ops.length-1;while(last>=0&&(ops[last].op=='ins'))last--;
+var endJ=0,t,o;
+for(t=0;t<=last;t++){o=ops[t];var w0=p0+o.j;
+if(o.op=='ok'||o.op=='m2'||o.op=='m3'||o.op=='sp'){for(j=o.j;j<o.nj;j++)if(s.st[p0+j]!=2)s.st[p0+j]=1;endJ=o.nj}
+else if(o.op=='sub'){s.st[w0]=2;endJ=o.nj}
+else if(o.op=='del'){if(commit&&s.st[w0]==0)s.st[w0]=3;endJ=commit?o.nj:o.j}}
+/* trailing deletions/subs after the last confirmed match are not judged yet */
+var lastOk=-1;for(t=0;t<=last;t++){o=ops[t];if(o.op=='ok'||o.op=='m2'||o.op=='m3'||o.op=='sp')lastOk=t}
+if(commit&&lastOk>=0){for(t=lastOk+1;t<=last;t++){o=ops[t];if(o.op=='del'&&s.st[p0+o.j]==3)s.st[p0+o.j]=0;if(o.op=='sub'&&false){}}
+endJ=ops[lastOk].nj;for(t=lastOk+1;t<=last;t++){o=ops[t];if(o.op=='sub')endJ=o.nj}}
+/* heard-but-wrong at the tail: a real word that fits nothing near the next expected words goes red right away */
+var tail=[],q;for(t=ops.length-1;t>=0&&ops[t].op=='ins';t--)tail.unshift(ops[t]);
+if(lastOk>=0||last<0||ops.length){var gotRed=0;for(q=0;q<tail.length&&q<2&&p0+endJ<n;q++){var tk=toks[tail[q].i];if(tk.length>=3&&sim(tk,p0+endJ)==0&&(p0+endJ+1>=n||sim(tk,p0+endJ+1)==0)&&(p0+endJ+2>=n||sim(tk,p0+endJ+2)==0)&&!(p0+endJ>0&&sim(tk,p0+endJ-1)>0)){s.st[p0+endJ]=2;(s.tl=s.tl||[]).push(p0+endJ);endJ++}else break}}
+s.i=p0+endJ;s.nz=0;return s}
 function reds(s){var c=0,t;for(t=0;t<s.st.length;t++)if(s.st[t]==2)c++;return c}
-function paint(s){var els=tx.querySelectorAll('.w'),ok=0,bad=0,t;
-for(t=0;t<els.length;t++){var c='w';if(s.st[t]==1){c+=' ok';ok++}else if(s.st[t]==2){c+=' bad';bad++;if(t==s.i&&listening)c+=' cur'}else if(t==s.i&&listening)c+=' cur';els[t].className=c}
-sc.textContent=(ok||bad)?('صح '+ok+' • أخطاء '+bad+' من '+words.length+' كلمة'):'';
-if(s.i>=words.length&&!finished){finished=true;finish(bad)}
+function paint(s){var els=tx.querySelectorAll('.w'),ok=0,bad=0,unk=0,t;
+for(t=0;t<els.length;t++){var c='w';if(s.st[t]==1){c+=' ok';ok++}else if(s.st[t]==2){c+=' bad';bad++;if(t==s.i&&listening)c+=' cur'}else if(s.st[t]==3){c+=' unk';unk++}else if(t==s.i&&listening)c+=' cur';els[t].className=c}
+sc.textContent=(ok||bad||unk)?('صح '+ok+' • أخطاء '+bad+(unk?' • مش واضحة '+unk:'')+' من '+words.length+' كلمة'):'';
+if(s.i>=words.length&&!finished){finished=true;finish(bad,unk)}
 var c2=tx.querySelector('.cur');if(c2&&c2.scrollIntoView&&!window.__noscroll)c2.scrollIntoView({block:'nearest'})}
-function finish(bad){if(listening)stop(true);ms.textContent=bad?'خلّصت الورد. راجع الكلمات الحمراء وجرّب تعيد.':'ما شاء الله، ورد كامل من غير أخطاء!'}
+function finish(bad,unk){if(listening)stop(true);ms.textContent=bad?'خلّصت الورد. راجع الكلمات الحمراء وجرّب تعيد.':unk?'خلّصت الورد من غير أخطاء مؤكدة. الكلمات البرتقالي ما اتسمعتش كويس، جرّب تعيدها.':'ما شاء الله، ورد كامل من غير أخطاء!'}
 function render(day){var d=VERSES[day];words=[];var h='';
-d.verses.forEach(function(v){v.w.forEach(function(w){var nn=norm(w[1]);if(nn){h+='<span class="w">'+w[0]+'</span> ';words.push({n:nn})}else h+='<span class="mk">'+w[0]+'</span> '});h+='<span class="vn">﴿'+v.n+'﴾</span> '});
+d.verses.forEach(function(v){v.w.forEach(function(w){var nn=norm(w[1]);if(nn){h+='<span class="w">'+w[0]+'</span> ';words.push({n:nn,v:vars(w[1])})}else h+='<span class="mk">'+w[0]+'</span> '});h+='<span class="vn">﴿'+v.n+'﴾</span> '});
 tx.innerHTML=h;$('st-t').textContent='سمّع الورد - اليوم '+d.ar+' ('+d.range+')'}
-function commit(){if(!S)return;if(sess.length>consumed){run(S,prep(sess.slice(consumed)),true);consumed=sess.length}paint(S)}
-function show(){var d=copy(S);if(sess.length>consumed)run(d,prep(sess.slice(consumed)),false);paint(d)}
-function reset(){clearTimeout(timer);if(rec){try{rec.onend=null;rec.abort()}catch(e){}rec=null}listening=false;finished=false;sess=[];consumed=0;S=fresh();go.textContent='ابدأ التسميع';go.className='';ms.textContent='';paint(S)}
+function keep(prev,nx){var t;for(t=0;t<prev.st.length;t++)if(prev.st[t]==2&&t>=S0.i&&!(prev.tl&&prev.tl.indexOf(t)>=0))nx.st[t]=2;if(nx.i<prev.i&&listening&&0)nx.i=prev.i;return nx}
+function commit(){if(!S)return;if(sess.length>consumed){S=keep(S,align(S0,prep(sess),true));consumed=sess.length}paint(S)}
+function show(){var d=copy(S);if(sess.length>consumed)d=keep(S,align(S0,prep(sess),false));paint(d)}
+function reset(){clearTimeout(timer);if(rec){try{rec.onend=null;rec.abort()}catch(e){}rec=null}listening=false;finished=false;sess=[];consumed=0;S=fresh();S0=copy(S);go.textContent='ابدأ التسميع';go.className='';ms.textContent='';paint(S)}
 function start(){if(!SR){ms.textContent='المتصفح ده مش بيدعم التعرف على الصوت. افتح الصفحة في Chrome أو Safari (مش جوه تطبيق انستجرام).';return}
 if(listening){stop();return}
 var r=new SR();r.lang='ar-SA';r.continuous=true;r.interimResults=true;rec=r;sess=[];consumed=0;
@@ -124,7 +161,7 @@ fin=e.results[e.results.length-1].isFinal;
 var nw=a.join(' ').split(/\s+/).filter(Boolean);if(nw.length<consumed)consumed=nw.length;sess=nw;
 clearTimeout(timer);if(fin){commit()}else{show();timer=setTimeout(commit,1400)}};
 r.onerror=function(e){if(e.error=='not-allowed'||e.error=='service-not-allowed'){ms.textContent='لازم تسمح للمتصفح باستخدام الميكروفون.';listening=false;go.textContent='ابدأ التسميع';go.className=''}else if(e.error=='no-speech'){ms.textContent='مش سامع صوت، قرّب من الميكروفون.'}else if(e.error!='aborted'){ms.textContent='حصلت مشكلة في التعرف على الصوت ('+e.error+').'}};
-r.onend=function(){if(listening&&rec===r){commit();sess=[];consumed=0;try{r.start()}catch(x){}}};
+r.onend=function(){if(listening&&rec===r){commit();S0=copy(S);sess=[];consumed=0;try{r.start()}catch(x){}}};
 listening=true;go.textContent='إيقاف';go.className='live';ms.textContent='سمّع... بسم الله';
 try{r.start()}catch(x){}paint(S)}
 function stop(quiet){clearTimeout(timer);commit();listening=false;go.textContent='ابدأ التسميع';go.className='';if(rec){var r=rec;rec=null;try{r.onend=null;r.stop()}catch(e){}}paint(S);if(!quiet&&(!ms.textContent||/سمّع/.test(ms.textContent)))ms.textContent='اتوقف التسميع. تقدر تكمل أو تعيد من الأول.'}
@@ -132,7 +169,7 @@ go.onclick=start;rs.onclick=function(){reset();ms.textContent='رجعنا من �
 $('cl').onclick=function(){reset();ov.className='ov'};
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-rec]');if(!b)return;render(b.getAttribute('data-rec'));reset();ov.className='ov on'});
 ov.addEventListener('click',function(e){if(e.target===ov){reset();ov.className='ov'}});
-window.__ydq={run:run,prep:prep,setWords:function(a){words=a.map(function(x){return {n:norm(x)}})},fresh:fresh,reds:reds};
+window.__ydq={align:align,prep:prep,setWords:function(a){words=a.map(function(x){return {n:norm(x),v:vars(x)}})},fresh:fresh,reds:reds};
 })();
 </script><script>
 (function(){var f=document.getElementById('jf'),i=document.getElementById('jn'),m=document.getElementById('jm');
