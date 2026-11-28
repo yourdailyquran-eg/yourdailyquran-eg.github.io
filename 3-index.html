@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ابدأ من الأول - وردك اليومي</title>
+<meta name="description" content="ورد قرآني قصير كل يوم، من أول البقرة. ابدأ من اليوم الأول واحفظ معنا يومًا بيوم.">
+<meta property="og:title" content="ابدأ من الأول - وردك اليومي"><meta property="og:description" content="ورد قرآني قصير كل يوم، من أول البقرة.">
+<meta name="theme-color" content="#0b0d12">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Kufi+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(circle at 50% 0,#1c1a12,#0b0d12 60%) #0b0d12;color:#e9e2d0;font-family:'Noto Kufi Arabic','Segoe UI',Tahoma,sans-serif;min-height:100vh}
+main{max-width:460px;margin:auto;padding:30px 18px 44px}
+.head{text-align:center}.bis{font-family:Amiri,serif;color:#c9a24b;font-size:22px;margin-bottom:10px}
+h1{font-family:Amiri,serif;font-size:42px;color:#e8c26a;line-height:1.3}
+h2{font-size:18px;font-weight:600;color:#fff;margin:4px 0 10px}
+.intro{font-size:14px;line-height:1.9;color:#b9b3a2}
+.rule{height:1px;background:linear-gradient(90deg,transparent,#c9a24b,transparent);margin:22px 0}
+ol{list-style:none;padding:0;display:grid;gap:12px}
+.item{display:flex;align-items:center;gap:12px;background:#14161d;border:1px solid #2b2a22;border-radius:16px;padding:14px}
+.item.live{border-color:#c9a24b}
+.num{flex:none;width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#e8c26a,#a67f2e);color:#0b0d12;font-weight:600;font-size:20px;display:flex;align-items:center;justify-content:center}
+.item:not(.live) .num{background:#2a2820;color:#c9a24b}
+.info{flex:1;min-width:0}.day{font-size:12px;color:#9a9484}
+.rng{font-family:Amiri,serif;font-size:23px;color:#f3ead2;margin-top:2px;white-space:nowrap}
+.note{font-size:12px;color:#c9a24b;margin-top:2px}
+.tag{display:inline-block;white-space:nowrap;font-size:10px;padding:2px 8px;border-radius:8px;margin-inline-start:6px;background:#2a2a2a;color:#aaa}
+.tag.live{background:#1f3a2b;color:#7fd6a0}.tag.tomorrow{background:#3a2f14;color:#e8c26a}
+.btn{flex:none;font-size:13px;font-weight:600;background:#c9a24b;color:#0b0d12;padding:12px 14px;border-radius:22px;text-decoration:none;white-space:nowrap}
+.btn.off{background:#22232a;color:#6f6a5c}
+.more{text-align:center;color:#6f6a5c;font-size:13px;margin-top:16px}
+.foot{text-align:center}.ayah{font-family:Amiri,serif;color:#c9a24b;font-size:19px}
+.handle{font-size:12px;color:#8d8777;margin-top:6px}.handle a{color:inherit;text-decoration:none;direction:ltr;unicode-bidi:isolate}
+.jump{display:flex;gap:8px;margin:18px auto 0;max-width:320px}
+.jump input{flex:1;min-width:0;background:#14161d;border:1px solid #2b2a22;border-radius:22px;color:#f3ead2;font:inherit;font-size:15px;padding:11px 16px;text-align:center;outline:none}
+.jump input:focus{border-color:#c9a24b}.jump input::placeholder{color:#6f6a5c}
+.jump button{flex:none;border:0;cursor:pointer;font:inherit;font-size:13px;font-weight:600;background:#c9a24b;color:#0b0d12;padding:11px 20px;border-radius:22px}
+.jmsg{font-size:12px;color:#c9a24b;min-height:18px;margin-top:8px;text-align:center}
+.item.flash{animation:fl 1.6s ease}@keyframes fl{0%,60%{box-shadow:0 0 0 2px #e8c26a,0 0 24px #c9a24b66}100%{box-shadow:none}}
+@media(max-width:359px){.item{gap:8px;padding:12px 10px}.num{width:38px;height:38px;font-size:17px}.btn{padding:10px}}
+.acts{flex:none;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:center}
+.btn.rec{background:transparent;color:#e8c26a;border:1px solid #c9a24b;cursor:pointer;font:inherit;font-size:13px;font-weight:600;padding:11px 14px;border-radius:22px}
+.ov{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;justify-content:center;z-index:9}
+.ov.on{display:flex}
+.sheet{width:100%;max-width:460px;height:88vh;overflow:auto;background:#0f1117;border:1px solid #c9a24b;border-radius:22px 22px 0 0;padding:18px 16px 22px}
+.sh-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sh-top b{font-size:16px;color:#e8c26a;font-weight:600}.x{background:none;border:0;color:#9a9484;font-size:26px;cursor:pointer;line-height:1}
+.hint{font-size:12px;color:#9a9484;line-height:1.8;margin-bottom:10px}
+.txt{font-family:Amiri,serif;font-size:30px;line-height:2.3;color:#8d8777;text-align:justify;padding:6px 4px}
+.w{border-radius:6px;padding:0 2px;transition:.25s;color:transparent;border-bottom:2px solid #3a382c}
+.w.cur{background:#c9a24b22;border-bottom-color:#c9a24b;box-shadow:0 0 0 1px #c9a24b66}
+.w.ok{color:#5fe08e;border-bottom-color:transparent}.w.bad{color:#ff6b6b;background:#ff6b6b22;border-bottom-color:#ff6b6b}
+.mk{color:#c9a24b88;font-size:20px}.vn{color:#c9a24b;font-size:20px;margin:0 3px}
+.bar{display:flex;gap:10px;margin-top:12px;position:sticky;bottom:-22px;background:#0f1117;padding:10px 0 22px}
+.bar button{flex:1;border:0;cursor:pointer;font:inherit;font-size:14px;font-weight:600;padding:13px;border-radius:24px}
+#go{background:#c9a24b;color:#0b0d12}#go.live{background:#c0392b;color:#fff}
+#rs{background:#22232a;color:#e9e2d0}
+.st{font-size:13px;color:#c9a24b;text-align:center;min-height:20px;margin-top:10px;line-height:1.7}
+.sc{text-align:center;font-size:13px;color:#b9b3a2;margin-top:4px}
+</style></head><body><main>
+<header class="head"><div class="bis">بسم الله الرحمن الرحيم</div><h1>وردك اليومي</h1><h2>ابدأ من الأول</h2>
+<p class="intro">ورد قرآني قصير كل يوم، من أول البقرة. ابدأ من اليوم الأول واحفظ معنا يومًا بيوم.</p><form class="jump" id="jf" autocomplete="off"><input id="jn" type="text" inputmode="numeric" placeholder="اكتب رقم اليوم" aria-label="رقم اليوم"><button type="submit">روح لليوم</button></form><div class="jmsg" id="jm"></div></header>
+<div class="rule"></div>
+<ol>
+<li id="day-1" class="item live"><div class="num">١</div><div class="info"><div class="day">اليوم ١ <span class="tag live">متاح الآن</span></div><div class="rng">البقرة ١ - ٥</div></div><div class="acts"><a class="btn" href="https://www.instagram.com/yourdailyquran.eg/reel/DgKxmdUSELJ/" target="_blank" rel="noopener">شوف الريل</a><button class="btn rec" data-rec="1">سمّع الورد</button></div></li>
+<li id="day-2" class="item live"><div class="num">٢</div><div class="info"><div class="day">اليوم ٢ <span class="tag live">متاح الآن</span></div><div class="rng">البقرة ٦ - ١٠</div></div><div class="acts"><a class="btn" href="https://www.instagram.com/yourdailyquran.eg/reel/DgNZVDMSp46/" target="_blank" rel="noopener">شوف الريل</a><button class="btn rec" data-rec="2">سمّع الورد</button></div></li>
+<li id="day-3" class="item live"><div class="num">٣</div><div class="info"><div class="day">اليوم ٣ <span class="tag live">متاح الآن</span></div><div class="rng">البقرة ١١ - ١٤</div></div><div class="acts"><a class="btn" href="https://www.instagram.com/yourdailyquran.eg/reel/DgQSBwsSr2q/" target="_blank" rel="noopener">شوف الريل</a><button class="btn rec" data-rec="3">سمّع الورد</button></div></li>
+<li id="day-4" class="item tomorrow"><div class="num">٤</div><div class="info"><div class="day">اليوم ٤ <span class="tag tomorrow">بكرة</span></div><div class="rng">البقرة ١٥</div></div><div class="acts"><span class="btn off">قريبًا</span></div></li>
+</ol>
+<p class="more">وتتحدّث الصفحة كل يوم بورد جديد</p>
+<div class="rule"></div>
+<footer class="foot"><div class="ayah">﴿ وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ ﴾</div><div class="handle"><a href="https://www.instagram.com/yourdailyquran.eg/" target="_blank" rel="noopener">@yourdailyquran.eg</a></div></footer>
+</main>
+<div class="ov" id="ov"><div class="sheet"><div class="sh-top"><b id="st-t"></b><button class="x" id="cl" aria-label="إغلاق">×</button></div>
+<p class="hint">اضغط ابدأ وسمّع الآيات من حفظك. الكلام مخفي زي الريل. كل كلمة تقولها صح في مكانها بتظهر، والكلمة الغلط أو اللي مش في مكانها بتظهر بالأحمر وتتحسب غلطة. وتقدر تعيد من الأول في أي لحظة.</p>
+<div class="txt" id="tx"></div><div class="sc" id="sc"></div>
+<div class="bar"><button id="go">ابدأ التسميع</button><button id="rs">إعادة من الأول</button></div>
+<div class="st" id="ms"></div></div></div>
+<script>var VERSES={"1": {"ar": "١", "range": "البقرة ١ - ٥", "verses": [{"n": "١", "w": [["الٓمٓ", "الٓمٓ"]]}, {"n": "٢", "w": [["ذَٰلِكَ", "ذَٰلِكَ"], ["ٱلْكِتَٰبُ", "ٱلْكِتَٰبُ"], ["لَا", "لَا"], ["رَيْبَ", "رَيْبَ"], ["ۛ", "ۛ"], ["فِيهِ", "فِيهِ"], ["ۛ", "ۛ"], ["هُدًۭى", "هُدًۭى"], ["لِّلْمُتَّقِينَ", "لِّلْمُتَّقِينَ"]]}, {"n": "٣", "w": [["ٱلَّذِينَ", "ٱلَّذِينَ"], ["يُؤْمِنُونَ", "يُؤْمِنُونَ"], ["بِٱلْغَيْبِ", "بِٱلْغَيْبِ"], ["وَيُقِيمُونَ", "وَيُقِيمُونَ"], ["ٱلصَّلَوٰةَ", "ٱلصَّلَوٰةَ"], ["وَمِمَّا", "وَمِمَّا"], ["رَزَقْنَٰهُمْ", "رَزَقْنَٰهُمْ"], ["يُنفِقُونَ", "يُنفِقُونَ"]]}, {"n": "٤", "w": [["وَٱلَّذِينَ", "وَٱلَّذِينَ"], ["يُؤْمِنُونَ", "يُؤْمِنُونَ"], ["بِمَآ", "بِمَآ"], ["أُنزِلَ", "أُنزِلَ"], ["إِلَيْكَ", "إِلَيْكَ"], ["وَمَآ", "وَمَآ"], ["أُنزِلَ", "أُنزِلَ"], ["مِن", "مِن"], ["قَبْلِكَ", "قَبْلِكَ"], ["وَبِٱلْءَاخِرَةِ", "وَبِٱلْءَاخِرَةِ"], ["هُمْ", "هُمْ"], ["يُوقِنُونَ", "يُوقِنُونَ"]]}, {"n": "٥", "w": [["أُو۟لَٰٓئِكَ", "أُو۟لَٰٓئِكَ"], ["عَلَىٰ", "عَلَىٰ"], ["هُدًۭى", "هُدًۭى"], ["مِّن", "مِّن"], ["رَّبِّهِمْ", "رَّبِّهِمْ"], ["ۖ", "ۖ"], ["وَأُو۟لَٰٓئِكَ", "وَأُو۟لَٰٓئِكَ"], ["هُمُ", "هُمُ"], ["ٱلْمُفْلِحُونَ", "ٱلْمُفْلِحُونَ"]]}]}, "2": {"ar": "٢", "range": "البقرة ٦ - ١٠", "verses": [{"n": "٦", "w": [["إِنَّ", "إِنَّ"], ["ٱلَّذِينَ", "ٱلَّذِينَ"], ["كَفَرُوا۟", "كَفَرُوا۟"], ["سَوَآءٌ", "سَوَآءٌ"], ["عَلَيْهِمْ", "عَلَيْهِمْ"], ["ءَأَنذَرْتَهُمْ", "ءَأَنذَرْتَهُمْ"], ["أَمْ", "أَمْ"], ["لَمْ", "لَمْ"], ["تُنذِرْهُمْ", "تُنذِرْهُمْ"], ["لَا", "لَا"], ["يُؤْمِنُونَ", "يُؤْمِنُونَ"]]}, {"n": "٧", "w": [["خَتَمَ", "خَتَمَ"], ["ٱللَّهُ", "ٱللَّهُ"], ["عَلَىٰ", "عَلَىٰ"], ["قُلُوبِهِمْ", "قُلُوبِهِمْ"], ["وَعَلَىٰ", "وَعَلَىٰ"], ["سَمْعِهِمْ", "سَمْعِهِمْ"], ["ۖ", "ۖ"], ["وَعَلَىٰٓ", "وَعَلَىٰٓ"], ["أَبْصَٰرِهِمْ", "أَبْصَٰرِهِمْ"], ["غِشَٰوَةٌۭ", "غِشَٰوَةٌۭ"], ["ۖ", "ۖ"], ["وَلَهُمْ", "وَلَهُمْ"], ["عَذَابٌ", "عَذَابٌ"], ["عَظِيمٌۭ", "عَظِيمٌۭ"]]}, {"n": "٨", "w": [["وَمِنَ", "وَمِنَ"], ["ٱلنَّاسِ", "ٱلنَّاسِ"], ["مَن", "مَن"], ["يَقُولُ", "يَقُولُ"], ["ءَامَنَّا", "ءَامَنَّا"], ["بِٱللَّهِ", "بِٱللَّهِ"], ["وَبِٱلْيَوْمِ", "وَبِٱلْيَوْمِ"], ["ٱلْءَاخِرِ", "ٱلْءَاخِرِ"], ["وَمَا", "وَمَا"], ["هُم", "هُم"], ["بِمُؤْمِنِينَ", "بِمُؤْمِنِينَ"]]}, {"n": "٩", "w": [["يُخَٰدِعُونَ", "يُخَٰدِعُونَ"], ["ٱللَّهَ", "ٱللَّهَ"], ["وَٱلَّذِينَ", "وَٱلَّذِينَ"], ["ءَامَنُوا۟", "ءَامَنُوا۟"], ["وَمَا", "وَمَا"], ["يَخْدَعُونَ", "يَخْدَعُونَ"], ["إِلَّآ", "إِلَّآ"], ["أَنفُسَهُمْ", "أَنفُسَهُمْ"], ["وَمَا", "وَمَا"], ["يَشْعُرُونَ", "يَشْعُرُونَ"]]}, {"n": "١٠", "w": [["فِى", "فِى"], ["قُلُوبِهِم", "قُلُوبِهِم"], ["مَّرَضٌۭ", "مَّرَضٌۭ"], ["فَزَادَهُمُ", "فَزَادَهُمُ"], ["ٱللَّهُ", "ٱللَّهُ"], ["مَرَضًۭا", "مَرَضًۭا"], ["ۖ", "ۖ"], ["وَلَهُمْ", "وَلَهُمْ"], ["عَذَابٌ", "عَذَابٌ"], ["أَلِيمٌۢ", "أَلِيمٌۢ"], ["بِمَا", "بِمَا"], ["كَانُوا۟", "كَانُوا۟"], ["يَكْذِبُونَ", "يَكْذِبُونَ"]]}]}, "3": {"ar": "٣", "range": "البقرة ١١ - ١٤", "verses": [{"n": "١١", "w": [["وَإِذَا", "وَإِذَا"], ["قِيلَ", "قِيلَ"], ["لَهُمْ", "لَهُمْ"], ["لَا", "لَا"], ["تُفْسِدُوا۟", "تُفْسِدُوا۟"], ["فِى", "فِى"], ["ٱلْأَرْضِ", "ٱلْأَرْضِ"], ["قَالُوٓا۟", "قَالُوٓا۟"], ["إِنَّمَا", "إِنَّمَا"], ["نَحْنُ", "نَحْنُ"], ["مُصْلِحُونَ", "مُصْلِحُونَ"]]}, {"n": "١٢", "w": [["أَلَآ", "أَلَآ"], ["إِنَّهُمْ", "إِنَّهُمْ"], ["هُمُ", "هُمُ"], ["ٱلْمُفْسِدُونَ", "ٱلْمُفْسِدُونَ"], ["وَلَٰكِن", "وَلَٰكِن"], ["لَّا", "لَّا"], ["يَشْعُرُونَ", "يَشْعُرُونَ"]]}, {"n": "١٣", "w": [["وَإِذَا", "وَإِذَا"], ["قِيلَ", "قِيلَ"], ["لَهُمْ", "لَهُمْ"], ["ءَامِنُوا۟", "ءَامِنُوا۟"], ["كَمَآ", "كَمَآ"], ["ءَامَنَ", "ءَامَنَ"], ["ٱلنَّاسُ", "ٱلنَّاسُ"], ["قَالُوٓا۟", "قَالُوٓا۟"], ["أَنُؤْمِنُ", "أَنُؤْمِنُ"], ["كَمَآ", "كَمَآ"], ["ءَامَنَ", "ءَامَنَ"], ["ٱلسُّفَهَآءُ", "ٱلسُّفَهَآءُ"], ["ۗ", "ۗ"], ["أَلَآ", "أَلَآ"], ["إِنَّهُمْ", "إِنَّهُمْ"], ["هُمُ", "هُمُ"], ["ٱلسُّفَهَآءُ", "ٱلسُّفَهَآءُ"], ["وَلَٰكِن", "وَلَٰكِن"], ["لَّا", "لَّا"], ["يَعْلَمُونَ", "يَعْلَمُونَ"]]}, {"n": "١٤", "w": [["وَإِذَا", "وَإِذَا"], ["لَقُوا۟", "لَقُوا۟"], ["ٱلَّذِينَ", "ٱلَّذِينَ"], ["ءَامَنُوا۟", "ءَامَنُوا۟"], ["قَالُوٓا۟", "قَالُوٓا۟"], ["ءَامَنَّا", "ءَامَنَّا"], ["وَإِذَا", "وَإِذَا"], ["خَلَوْا۟", "خَلَوْا۟"], ["إِلَىٰ", "إِلَىٰ"], ["شَيَٰطِينِهِمْ", "شَيَٰطِينِهِمْ"], ["قَالُوٓا۟", "قَالُوٓا۟"], ["إِنَّا", "إِنَّا"], ["مَعَكُمْ", "مَعَكُمْ"], ["إِنَّمَا", "إِنَّمَا"], ["نَحْنُ", "نَحْنُ"], ["مُسْتَهْزِءُونَ", "مُسْتَهْزِءُونَ"]]}]}};</script>
+<script>(function(){
+var $=function(i){return document.getElementById(i)};
+var ov=$('ov'),tx=$('tx'),go=$('go'),rs=$('rs'),ms=$('ms'),sc=$('sc');
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var words=[],rec=null,listening=false,S=null,sess=[],consumed=0,timer=null,finished=false;
+function norm(s){return s.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,'').replace(/[ٱأإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/[^\u0621-\u064A]/g,'')}
+function lev(a,b){var m=a.length,n=b.length,d=[],i,j;for(i=0;i<=m;i++){d[i]=[i]}for(j=1;j<=n;j++)d[0][j]=j;
+for(i=1;i<=m;i++)for(j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]==b[j-1]?0:1));return d[m][n]}
+function like(a,b){if(!a||!b)return false;if(a==b)return true;var l=Math.max(a.length,b.length);if(l<=2)return false;
+var r=1-lev(a,b)/l;return r>=(l<=3?0.66:l<=5?0.6:0.62)}
+function prep(arr){var o=[],i;for(i=0;i<arr.length;i++){var w=norm(arr[i]);if(!w)continue;
+if(w=='الف'&&norm(arr[i+1]||'')=='لام'&&norm(arr[i+2]||'')=='ميم'){o.push('الم');i+=2;continue}o.push(w)}return o}
+function fresh(){var st=[],t;for(t=0;t<words.length;t++)st[t]=0;return {st:st,i:0}}
+function copy(s){return {st:s.st.slice(),i:s.i}}
+function X(i){return i<words.length?words[i].n:''}
+/* commit=true: wrong words are marked red (once per position). commit=false: only correct words advance. */
+function run(s,toks,commit){var n=words.length,t=0;
+while(t<toks.length&&s.i<n){var w=toks[t],i=s.i,nx=toks[t+1]||'';
+if(like(w,X(i))){if(s.st[i]!=2)s.st[i]=1;s.i++;t++;continue}
+if(i+1<n&&like(w,X(i)+X(i+1))){if(s.st[i]!=2)s.st[i]=1;if(s.st[i+1]!=2)s.st[i+1]=1;s.i+=2;t++;continue}
+if(nx&&like(w+nx,X(i))){if(s.st[i]!=2)s.st[i]=1;s.i++;t+=2;continue}
+if(i>0&&like(w,X(i-1))){t++;continue}
+if(!commit)break;
+if(i+1<n&&like(w,X(i+1))){s.st[i]=2;if(s.st[i+1]!=2)s.st[i+1]=1;s.i+=2;t++;continue}
+s.st[i]=2;t++}
+return s}
+function reds(s){var c=0,t;for(t=0;t<s.st.length;t++)if(s.st[t]==2)c++;return c}
+function paint(s){var els=tx.querySelectorAll('.w'),ok=0,bad=0,t;
+for(t=0;t<els.length;t++){var c='w';if(s.st[t]==1){c+=' ok';ok++}else if(s.st[t]==2){c+=' bad';bad++;if(t==s.i&&listening)c+=' cur'}else if(t==s.i&&listening)c+=' cur';els[t].className=c}
+sc.textContent=(ok||bad)?('صح '+ok+' • أخطاء '+bad+' من '+words.length+' كلمة'):'';
+if(s.i>=words.length&&!finished){finished=true;finish(bad)}
+var c2=tx.querySelector('.cur');if(c2&&c2.scrollIntoView&&!window.__noscroll)c2.scrollIntoView({block:'nearest'})}
+function finish(bad){if(listening)stop(true);ms.textContent=bad?'خلّصت الورد. راجع الكلمات الحمراء وجرّب تعيد.':'ما شاء الله، ورد كامل من غير أخطاء!'}
+function render(day){var d=VERSES[day];words=[];var h='';
+d.verses.forEach(function(v){v.w.forEach(function(w){var nn=norm(w[1]);if(nn){h+='<span class="w">'+w[0]+'</span> ';words.push({n:nn})}else h+='<span class="mk">'+w[0]+'</span> '});h+='<span class="vn">﴿'+v.n+'﴾</span> '});
+tx.innerHTML=h;$('st-t').textContent='سمّع الورد - اليوم '+d.ar+' ('+d.range+')'}
+function commit(){if(!S)return;if(sess.length>consumed){run(S,prep(sess.slice(consumed)),true);consumed=sess.length}paint(S)}
+function show(){var d=copy(S);if(sess.length>consumed)run(d,prep(sess.slice(consumed)),false);paint(d)}
+function reset(){clearTimeout(timer);if(rec){try{rec.onend=null;rec.abort()}catch(e){}rec=null}listening=false;finished=false;sess=[];consumed=0;S=fresh();go.textContent='ابدأ التسميع';go.className='';ms.textContent='';paint(S)}
+function start(){if(!SR){ms.textContent='المتصفح ده مش بيدعم التعرف على الصوت. افتح الصفحة في Chrome أو Safari (مش جوه تطبيق انستجرام).';return}
+if(listening){stop();return}
+var r=new SR();r.lang='ar-SA';r.continuous=true;r.interimResults=true;rec=r;sess=[];consumed=0;
+r.onresult=function(e){var a=[],i,fin=false;for(i=0;i<e.results.length;i++){a.push(e.results[i][0].transcript);}
+fin=e.results[e.results.length-1].isFinal;
+var nw=a.join(' ').split(/\s+/).filter(Boolean);if(nw.length<consumed)consumed=nw.length;sess=nw;
+clearTimeout(timer);if(fin){commit()}else{show();timer=setTimeout(commit,1400)}};
+r.onerror=function(e){if(e.error=='not-allowed'||e.error=='service-not-allowed'){ms.textContent='لازم تسمح للمتصفح باستخدام الميكروفون.';listening=false;go.textContent='ابدأ التسميع';go.className=''}else if(e.error=='no-speech'){ms.textContent='مش سامع صوت، قرّب من الميكروفون.'}else if(e.error!='aborted'){ms.textContent='حصلت مشكلة في التعرف على الصوت ('+e.error+').'}};
+r.onend=function(){if(listening&&rec===r){commit();sess=[];consumed=0;try{r.start()}catch(x){}}};
+listening=true;go.textContent='إيقاف';go.className='live';ms.textContent='سمّع... بسم الله';
+try{r.start()}catch(x){}paint(S)}
+function stop(quiet){clearTimeout(timer);commit();listening=false;go.textContent='ابدأ التسميع';go.className='';if(rec){var r=rec;rec=null;try{r.onend=null;r.stop()}catch(e){}}paint(S);if(!quiet&&(!ms.textContent||/سمّع/.test(ms.textContent)))ms.textContent='اتوقف التسميع. تقدر تكمل أو تعيد من الأول.'}
+go.onclick=start;rs.onclick=function(){reset();ms.textContent='رجعنا من الأول.'};
+$('cl').onclick=function(){reset();ov.className='ov'};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-rec]');if(!b)return;render(b.getAttribute('data-rec'));reset();ov.className='ov on'});
+ov.addEventListener('click',function(e){if(e.target===ov){reset();ov.className='ov'}});
+window.__ydq={run:run,prep:prep,setWords:function(a){words=a.map(function(x){return {n:norm(x)}})},fresh:fresh,reds:reds};
+})();
+</script><script>
+(function(){var f=document.getElementById('jf'),i=document.getElementById('jn'),m=document.getElementById('jm');
+f.addEventListener('submit',function(e){e.preventDefault();
+var v=i.value.replace(/[\u0660-\u0669]/g,function(c){return c.charCodeAt(0)-1632}).replace(/\D/g,'');
+var el=v&&document.getElementById('day-'+parseInt(v,10));
+if(!el){m.textContent=v?'اليوم ده لسه مش موجود':'اكتب رقم اليوم';return}
+m.textContent='';el.scrollIntoView({behavior:'smooth',block:'center'});
+el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');i.blur()})})();
+</script></body></html>
